@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link rel="stylesheet" href="./css/bootstrap.min.css">        
+        <meta charset="utf-8"/>
+        <style>
+            .card-body {background-color: #000000; color: #ffffff;}
+        </style>
+    </head>
+    
+    <body>
+        <div class="container">
+            
+            <h1>Treasure Hunt</h1>
+            <h3>Current Score:</h3>
+            <h4 id="score"></h4>
+        
+        
+          <div class="row" id="gameboard">
+            <!--filled on startup-->
+          </div>
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="./js/bootstrap.js" ></script>        
+        
+        <!--put your modal dialogs here...-->
+        <!--Modal Dialogue Boxes-->
+        <div id="finishedGame" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-light">
+                        <h5 class="modal-title">You Won!</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p id="finishedGameText">Would you like to play again?</p>
+                        <div class="form-group">
+                            <label for="gameSize">You can change this value to change the game board size for next round!</label>
+                            <input type="Number" min="1" class="form-control" id="gameSize" name="gameSize" placeholder=10>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-dark">
+                        <button id="yes" type="button" class="btn btn-secondary" data-dismiss="modal">Yes</button>
+                        <button id="no" type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        
+        <script>
+        /* global $ */
+        // put your JavaScript code here...
+        
+        $(document).ready(function() 
+        {
+            // model ....
+            let model = {};
+
+            function initializeModel(size)
+            {
+                model.size = size;
+                model.count = 0;
+                model.win = false;
+                populateBoard(model.size);
+            }
+            
+            function populateBoard(x)
+            {
+                $('#gameboard').empty();
+                let rand = Math.floor(Math.random() * x);
+                for (var i = 0; i < x; i++)
+                {
+                    let cardbody = $("<div class=\"card-body\"></div>");
+                    
+                    if(i === rand)
+                    {
+                        cardbody.attr('id', 'treasure');
+                    }
+                    else
+                    {
+                        cardbody.attr('id', 'sand');
+                    }
+                    let card = $("<div class=\"card\"></div>");
+                    let item = $("<div class=\"col-sm-6\"></div>");
+                    card.append(cardbody[0]);
+                    item.append(card[0]);
+                    item.addClass("tile");
+                    $('#gameboard').append(item);
+                }
+                console.log("The correct one is number " + rand)
+            }
+            
+            // view...
+            function updateView()
+            {
+                //Scoring system. For fun. Green -> Yellow -> Orange -> Red
+                $("#score").text(model.count);
+                if(model.count < (model.size * 0.25))
+                {
+                     $("#score").css("color", "rgb(3, 188, 0)");
+                     $("#finishedGameText").text("Congrats! You finished in " + model.count + " guesses! That means you finished faster than average!")
+                }
+                else if(model.count < (model.size * 0.50))
+                {
+                     $("#score").css("color", "rgb(205, 211, 16)");
+                     $("#finishedGameText").text("Congrats! You finished in " + model.count + " guesses! That means you finished in average time!")
+                }
+                else if(model.count < (model.size * 0.75))
+                {
+                     $("#score").css("color", "rgb(249, 151, 4)");
+                     $("#finishedGameText").text("Congrats! You finished in " + model.count + " guesses! That means you finished slower than average...")
+                }
+                else if(model.count < (model.size * 0.85))
+                {
+                     $("#score").css("color", "rgb(249, 8, 3)");
+                     $("#finishedGameText").text("Congrats! You finished in " + model.count + " guesses! Were you even trying?")
+                }
+                
+            }            
+            
+            // controller ...
+            
+            $(document).on("click",".card-body",function() 
+            {
+                
+                if(!model.win) // Play while you haven't won
+                {
+                    if($(this).css("background-color") === "rgb(0, 0, 0)") //I am aware that this is a lazy way disabling things
+                    {
+                        model.count = model.count + 1;
+                    }
+                    if($(this).attr("id") === "treasure" && $(this).css("background-color") === "rgb(0, 0, 0)")
+                    {
+                        $(this).css("background-color", "#03bc00");
+                        model.win = true;
+                        $('#finishedGame').modal('show');
+                    }
+                    else
+                    {
+                        $(this).css("background-color", "#f2000c");
+                    }
+                    // console.log(model.count);
+                }
+                updateView();
+            });
+            
+
+            $('#yes').click(function() 
+            {
+                $('#finishedGame').modal('hide');
+                initializeModel($('#gameSize').val().trim());
+                updateView();
+            });
+            
+            // run...
+            initializeModel(10);
+            updateView();
+        });
+            
+        </script>
+    </body>
+
+</html>
