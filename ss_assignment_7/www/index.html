@@ -150,7 +150,14 @@
             $('#yes').click(function() 
             {
                 $('#finishedGame').modal('hide');
-                initializeModel($('#gameSize').val().trim());
+                if($('#gameSize').val().trim() === "")
+                {
+                    initializeModel(10);
+                }
+                else
+                {
+                    initializeModel($('#gameSize').val().trim());
+                }
                 updateView();
             });
             
