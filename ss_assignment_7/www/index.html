@@ -66,32 +66,6 @@
                 populateBoard(model.size);
             }
             
-            function populateBoard(x)
-            {
-                $('#gameboard').empty();
-                let rand = Math.floor(Math.random() * x);
-                for (var i = 0; i < x; i++)
-                {
-                    let cardbody = $("<div class=\"card-body\"></div>");
-                    
-                    if(i === rand)
-                    {
-                        cardbody.attr('id', 'treasure');
-                    }
-                    else
-                    {
-                        cardbody.attr('id', 'sand');
-                    }
-                    let card = $("<div class=\"card\"></div>");
-                    let item = $("<div class=\"col-sm-6\"></div>");
-                    card.append(cardbody[0]);
-                    item.append(card[0]);
-                    item.addClass("tile");
-                    $('#gameboard').append(item);
-                }
-                console.log("The correct one is number " + rand)
-            }
-            
             // view...
             function updateView()
             {
@@ -118,7 +92,33 @@
                      $("#finishedGameText").text("Congrats! You finished in " + model.count + " guesses! Were you even trying?")
                 }
                 
-            }            
+            }     
+            
+            function populateBoard(x)
+            {
+                $('#gameboard').empty();
+                let rand = Math.floor(Math.random() * x);
+                for (var i = 0; i < x; i++)
+                {
+                    let cardbody = $("<div class=\"card-body\"></div>");
+                    
+                    if(i === rand)
+                    {
+                        cardbody.attr('id', 'treasure');
+                    }
+                    else
+                    {
+                        cardbody.attr('id', 'sand');
+                    }
+                    let card = $("<div class=\"card\"></div>");
+                    let item = $("<div class=\"col-sm-6\"></div>");
+                    card.append(cardbody[0]);
+                    item.append(card[0]);
+                    item.addClass("tile");
+                    $('#gameboard').append(item);
+                }
+                console.log("The correct one is number " + rand)
+            }
             
             // controller ...
             
